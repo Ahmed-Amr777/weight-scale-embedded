@@ -1,0 +1,24 @@
+# Build artifacts
+code/GccApplication1/GccApplication1/Debug/*.o
+code/GccApplication1/GccApplication1/Debug/*.d
+code/GccApplication1/GccApplication1/Debug/*.elf
+code/GccApplication1/GccApplication1/Debug/*.eep
+code/GccApplication1/GccApplication1/Debug/*.lss
+code/GccApplication1/GccApplication1/Debug/*.srec
+code/GccApplication1/GccApplication1/Debug/*.map
+code/GccApplication1/GccApplication1/Debug/makedep.mk
+code/GccApplication1/GccApplication1/Debug/Makefile
+
+# Atmel Studio workspace/user files
+*.atsuo
+*.workspace
+
+# Proteus auto-saved backups
+Project Backups/Project Backups/
+
+# Transaction log
+code/TcfTransactionLog.csv
+
+# OS files
+Thumbs.db
+.DS_Store
