@@ -65,13 +65,13 @@ void admin_screen(void)
 {
     lcd_clear();
     lcd_goto(0, 0);
-    lcd_print("  ADMIN MENU    ");
+    lcd_print("ADMIN MENU A=Exit");
     lcd_goto(1, 0);
-    lcd_print("1=Hist 2=Prices ");
+    lcd_print("1=Hist 2=Prices");
     lcd_goto(2, 0);
-    lcd_print("3=Calib 4=Zero  ");
+    lcd_print("3=Calib 4=Zero");
     lcd_goto(3, 0);
-    lcd_print("5=Pass 6=Clear *=Exit");
+    lcd_print("5=Pass 6=Clear");
 
     char key = keypad_get_key();
 
@@ -83,7 +83,7 @@ void admin_screen(void)
         case '4': admin_set_zero();        break;
         case '5': admin_change_password(); break;
         case '6': admin_clear_history();   break;
-        case '*':
+        case 'A':
             current_mode = MODE_USER;
             lcd_clear();
             lcd_goto(0, 0);
@@ -139,9 +139,9 @@ void admin_view_history(void)
 
         char key = keypad_get_key();
 
-        if(key == '+' && index < transaction_count - 1)
+        if(key == 'C' && index < transaction_count - 1)
             index++;
-        else if(key == '-' && index > 0)
+        else if(key == 'B' && index > 0)
             index--;
         else if(key == 'C')
             break;
@@ -158,11 +158,11 @@ void admin_edit_prices(void)
     lcd_goto(2, 0);
     lcd_print("3=Orange4=Grapes");
     lcd_goto(3, 0);
-    lcd_print("5=Mango C=Back  ");
+    lcd_print("5=Mango A=Back  ");
 
     char key = keypad_get_key();
 
-    if(key == 'C') return;
+    if(key == 'A') return;
 
     int fruit_index = key - '1';
     if(fruit_index < 0 || fruit_index > 4) return;
@@ -177,7 +177,7 @@ void admin_edit_prices(void)
     lcd_goto(2, 0);
     lcd_print("New price:      ");
     lcd_goto(3, 0);
-    lcd_print("C=Cancel =Confirm");
+    lcd_print("A=Cancel D=Confirm");
 
     // get new price digits
     char digits[4] = {'0','0','0','0'};
@@ -187,9 +187,9 @@ void admin_edit_prices(void)
     {
         char k = keypad_get_key();
 
-        if(k == 'C') return;
+        if(k == 'A') return;
 
-        if(k == '=' && index > 0)
+        if(k == 'D' && index > 0)
         {
             // calculate price from digits
             float new_price = 0;
@@ -234,14 +234,14 @@ void admin_calibrate(void)
     lcd_goto(2, 0);
     lcd_print("on scale        ");
     lcd_goto(3, 0);
-    lcd_print("Press = when    ");
+    lcd_print("Press D when    ");
     _delay_ms(1000);
 
     lcd_goto(3, 0);
     lcd_print("ready...        ");
 
     char key = keypad_get_key();
-    if(key == 'C') return;
+    if(key == 'A') return;
 
     // read raw with 1kg
     long raw_1kg = hx711_average(20);
@@ -274,10 +274,10 @@ void admin_set_zero(void)
     lcd_goto(2, 0);
     lcd_print("weight from     ");
     lcd_goto(3, 0);
-    lcd_print("scale press =   ");
+    lcd_print("scale press D   ");
 
     char key = keypad_get_key();
-    if(key == 'C') return;
+    if(key == 'A') return;
 
     hx711_tare();
     eeprom_save_zero(zero_value);
@@ -303,13 +303,13 @@ void admin_change_password(void)
     lcd_goto(2, 0);
     lcd_print("____            ");
     lcd_goto(3, 0);
-    lcd_print("C=Cancel        ");
+    lcd_print("A=Cancel        ");
 
     while(index < 4)
     {
         char key = keypad_get_key();
 
-        if(key == 'C') return;
+        if(key == 'A') return;
 
         if(key >= '0' && key <= '9')
         {
@@ -382,13 +382,13 @@ void admin_clear_history(void)
     lcd_goto(1, 0);
     lcd_print("ALL data lost!  ");
     lcd_goto(2, 0);
-    lcd_print("= confirm       ");
+    lcd_print("D = confirm       ");
     lcd_goto(3, 0);
-    lcd_print("C cancel        ");
+    lcd_print("A = cancel        ");
 
     char key = keypad_get_key();
 
-    if(key == '=')
+    if(key == 'A')
     {
         eeprom_clear_history();
 

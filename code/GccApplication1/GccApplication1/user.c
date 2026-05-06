@@ -109,7 +109,7 @@ void user_screen(void)
 		login_stars = 0;
 		return;   // exit fast
 	}
-	else if(key == '=')
+	else if(key == 'D')
 	{
 		if(weight > 1.0)
 		{
@@ -119,13 +119,13 @@ void user_screen(void)
 		login_stars = 0;
 		return;
 	}
-	else if(key == 'C')
+	else if(key == '#')
 	{
 		hx711_tare();
 		login_stars = 0;
 		return;
 	}
-	else if(key == '*')
+	else if(key == 'A')
 	{
 		login_stars++;
 		if(login_stars >= 2)
@@ -175,5 +175,5 @@ void user_screen(void)
 	else if(weight >= 5000.0)
 	lcd_print("  !! OVERLOAD !!");
 	else
-	lcd_print("Stable = to save");
+	lcd_print("Stable D to save"); 
 }
