@@ -12,11 +12,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define LCD_DATA    PORTC
-#define LCD_DDR     DDRC
-#define RS  PD0
-#define RW  PD1
-#define EN  PD2
+#define LCD_DATA    PORTA
+#define LCD_DDR     DDRA
+#define RS  PC0
+#define RW  PC1
+#define EN  PC3
 
 void lcd_init(void);
 void lcd_command(unsigned char cmd);

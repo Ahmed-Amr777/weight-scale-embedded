@@ -11,32 +11,32 @@
 
 void lcd_command(unsigned char cmd)
 {
-    PORTD &= ~(1 << RS);
-    PORTD &= ~(1 << RW);
+    PORTC &= ~(1 << RS);
+    PORTC &= ~(1 << RW);
     LCD_DATA = cmd;
     
-    PORTD |=  (1 << EN);
+    PORTC |=  (1 << EN);
     _delay_us(10);
-    PORTD &= ~(1 << EN);
+    PORTC &= ~(1 << EN);
     _delay_ms(2);
 }
 
 void lcd_data(unsigned char data)
 {
-    PORTD |=  (1 << RS);
-    PORTD &= ~(1 << RW);
+    PORTC |=  (1 << RS);
+    PORTC &= ~(1 << RW);
     LCD_DATA = data;
     
-    PORTD |=  (1 << EN);
+    PORTC |=  (1 << EN);
     _delay_us(10);
-    PORTD &= ~(1 << EN);
+    PORTC &= ~(1 << EN);
     _delay_ms(2);
 }
 
 void lcd_init(void)
 {
     LCD_DDR  = 0xFF;
-    DDRD    |= (1 << RS) | (1 << RW) | (1 << EN);
+    DDRC    |= (1 << RS) | (1 << RW) | (1 << EN);
     
     _delay_ms(50);
     
@@ -119,7 +119,8 @@ void lcd_print_weight(float w)
     
     if(decimal < 10)
     {
-        lcd_data('0');
+	    lcd_data('0');
     }
     lcd_print_number(decimal);
-}
+    lcd_print(" g");     
+}	

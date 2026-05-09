@@ -1,45 +1,50 @@
-/*
- * hx711.c
- *
- * Created: 4/28/2026 9:06:10 AM
- *  Author: ahmed
- */ 
 #include "hx711.h"
 #include "lcd.h"
 #include "globals.h"
+
 long  zero_value   = 0;
-float scale_factor = 36.065;
+float scale_factor = 360.065;
 
 void hx711_init(void)
 {
-	DDRA &= ~(1 << DOUT);
-	DDRA |=  (1 << SCK);
-	PORTA &= ~(1 << SCK);
+	// Using bitwise operations ensures the LCD pins on PORTC are NOT overwritten
+	DDRC  &= ~(1 << DOUT);  // Set DOUT as input
+	DDRC  |=  (1 << SCK);   // Set SCK as output
+	PORTC &= ~(1 << SCK);   // Initialize SCK to LOW
 }
 
 long hx711_read(void)
 {
 	long result = 0;
 
-	while(PINA & (1 << DOUT));
+	// Wait until DOUT goes low (data ready)
+	while(PINC & (1 << DOUT));
 
 	for(int i = 0; i < 24; i++)
 	{
-		PORTA |=  (1 << SCK);
+		PORTC |=  (1 << SCK); // SCK HIGH
 		_delay_us(1);
 		result <<= 1;
-		if(PINA & (1 << DOUT))
-		result++;
-		PORTA &= ~(1 << SCK);
+		
+		if(PINC & (1 << DOUT))
+		{
+			result++;
+		}
+		
+		PORTC &= ~(1 << SCK); // SCK LOW
 		_delay_us(1);
 	}
 
-	PORTA |=  (1 << SCK);
+	// 25th pulse to set channel A at 128 gain
+	PORTC |=  (1 << SCK);
 	_delay_us(1);
-	PORTA &= ~(1 << SCK);
+	PORTC &= ~(1 << SCK);
 
+	// Sign extension for 24-bit negative numbers
 	if(result & 0x800000)
-	result |= 0xFF000000;
+	{
+		result |= 0xFF000000;
+	}
 
 	return result;
 }

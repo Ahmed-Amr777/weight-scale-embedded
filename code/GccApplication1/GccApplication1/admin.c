@@ -226,42 +226,82 @@ void admin_edit_prices(void)
 
 void admin_calibrate(void)
 {
-    lcd_clear();
-    lcd_goto(0, 0);
-    lcd_print("Calibration     ");
-    lcd_goto(1, 0);
-    lcd_print("Place 1kg weight");
-    lcd_goto(2, 0);
-    lcd_print("on scale        ");
-    lcd_goto(3, 0);
-    lcd_print("Press D when    ");
-    _delay_ms(1000);
+char digits[6] = {0,0,0,0,0,0};
+int  index = 0;
 
-    lcd_goto(3, 0);
-    lcd_print("ready...        ");
+lcd_clear();
+lcd_goto(0, 0);
+lcd_print("Set Scale Factor");
+lcd_goto(1, 0);
+lcd_print("Current:        ");
+lcd_goto(2, 0);
+lcd_print_number((long)scale_factor);
+lcd_goto(3, 0);
+lcd_print("New:            ");
+_delay_ms(2000);
 
-    char key = keypad_get_key();
-    if(key == 'A') return;
+lcd_goto(3, 5);
+lcd_print("           ");   // clear "New:" area
+lcd_goto(3, 5);
 
-    // read raw with 1kg
-    long raw_1kg = hx711_average(20);
-
-    // calculate scale factor
-    scale_factor = (float)(raw_1kg - zero_value) / 1000.0;
-
-    // save to EEPROM
-    eeprom_save_scale(scale_factor);
-
-    lcd_clear();
-    lcd_goto(0, 0);
-    lcd_print("Calibrated!     ");
-    lcd_goto(1, 0);
-    lcd_print("Factor:         ");
-    lcd_goto(2, 0);
-    lcd_print_number((long)scale_factor);
-    lcd_goto(3, 0);
-    lcd_print("Saved!          ");
-    _delay_ms(2000);
+// get digits from keypad
+while(1)
+{
+	char key = keypad_get_key();
+	
+	if(key == 'A')
+	{
+		// cancel
+		return;
+	}
+	
+	if(key == 'D')
+	{
+		// confirm
+		if(index == 0) continue;   // need at least 1 digit
+		
+		// calculate scale factor from digits
+		float new_factor = 0;
+		for(int i = 0; i < index; i++)
+		{
+			new_factor = new_factor * 10 + (digits[i] - '0');
+		}
+		
+		// update and save
+		scale_factor = new_factor;
+		eeprom_save_scale(scale_factor);
+		
+		// confirmation
+		lcd_clear();
+		lcd_goto(0, 0);
+		lcd_print("Saved!          ");
+		lcd_goto(1, 0);
+		lcd_print("Factor:         ");
+		lcd_goto(2, 0);
+		lcd_print_number((long)scale_factor);
+		_delay_ms(2000);
+		return;
+	}
+	
+	if(key == 'C')
+	{
+		// backspace
+		if(index > 0)
+		{
+			index--;
+			lcd_goto(3, 5 + index);
+			lcd_data(' ');
+			lcd_goto(3, 5 + index);
+		}
+	}
+	
+	if(key >= '0' && key <= '9' && index < 6)
+	{
+		digits[index] = key;
+		lcd_data(key);
+		index++;
+	}
+}
 }
 
 void admin_set_zero(void)

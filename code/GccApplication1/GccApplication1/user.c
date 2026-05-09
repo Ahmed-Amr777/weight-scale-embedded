@@ -161,12 +161,13 @@ void user_screen(void)
 
 	lcd_goto(1, 0);
 	lcd_print("W:");
-	lcd_print_weight(weight / 1000.0);
-	lcd_print(" kg     ");
+	lcd_print_weight(weight);
+	lcd_print(" g     ");
 
 	lcd_goto(2, 0);
 	lcd_print("Total:");
-	lcd_print_weight(price);
+	
+	lcd_print_number(price);
 	lcd_print(" EGP    ");
 
 	lcd_goto(3, 0);
